@@ -11,6 +11,7 @@ dotenv.config()
 app.use(cookieParser());
 app.use(express.json()); 
 app.use("/api/auth",authRoutes)
+app.use("/api/message",messageRoutes)
 const PORT = process.env.PORT;
 // Use cookie-parser middleware
 app.listen(5001,()=>{
