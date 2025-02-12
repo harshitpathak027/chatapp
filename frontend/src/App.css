@@ -1,1 +1,4 @@
 @import "tailwindcss";
+.input{
+    padding-left: 2rem !important;
+}

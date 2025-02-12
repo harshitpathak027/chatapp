@@ -1,27 +1,38 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import HomePage from "./pages/HomePage.jsx"
 import SignupPage from "./pages/SignUpPage.jsx"
 import LoginPage from "./pages/LoginInPage.jsx"
 import SettingPage from "./pages/SettingsPage.jsx"
 import profilePage from "./pages/ProfilePage.jsx"
 import './App.css'
+import {Loader} from "lucide-react"
 import Navbar from './components/Navbar'
-import { Route, Routes } from 'react-router-dom'
+import {Toaster} from "react-hot-toast"
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { useAuthStore } from './store/useAuthStore.js'
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const {authUser,checkAuth,isCheckingAuth} = useAuthStore();
+  useEffect(()=>{
+    checkAuth();
+  },[checkAuth])
+  console.log({authUser})
+  if(isCheckingAuth && !authUser) return(
+    <div className='flex items-center justify-center h-screen'>
+      <Loader className="size-10 animate-spin"></Loader>
+    </div>
+  )
   return (
     <>
      <Navbar/>
       <Routes>
-        <Route path='/' element={<HomePage/>}></Route>
-        <Route path='/signup' element={<SignupPage/>}></Route>
-        <Route path='/login' element={<LoginPage/>}></Route>
-        <Route path='/settings' element={<SettingPage/>}></Route>
-        <Route path='/profile' element={<profilePage/>}></Route>
+        <Route path='/' element={authUser?<HomePage/>:<Navigate to="/login"/>}></Route>
+        <Route path='/signup' element={!authUser?<SignupPage/>:<Navigate to="/"/>}></Route>
+        <Route path='/login' element={!authUser?<LoginPage/>:<Navigate to="/"/>}></Route>
+        <Route path='/settings' element={authUser?<SettingPage/>:<Navigate to="/login"/>}></Route>
+        <Route path='/profile' element={authUser?<profilePage/>:<Navigate to="/login"/>}></Route>
       </Routes>
-     
+     <Toaster/>
     </>
   )
 }
